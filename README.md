@@ -14,11 +14,17 @@ Now, I am going beond. Shifting from Python to C for better performance. But, it
 <br><br>
 
 ```bash
-# Set brightness level 1-100+
+# Set brightness level 10-300
 bright --set 80
 
 # get brightness level
 bright --get
+
+# get bright version
+bright --version
+
+#get author information
+bright --author
 
 ```
 
