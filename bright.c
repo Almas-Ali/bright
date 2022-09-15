@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdbool.h>
+#include "bright.h"
 
 #define __version__ 1.0
 #define __author__ "MD. ALMAS ALI"
@@ -13,12 +13,6 @@ void version();
 
 void main(int argc, char *argv[])
 {
-    // system("clear");
-    // printf("%s", argv[1]);
-    // printf("%s", argv[2]);
-    // printf("%s", argv[3]);
-
-    // printf("%d\n", argc);
 
     if (argc == 2)
     {
@@ -49,14 +43,22 @@ void main(int argc, char *argv[])
 
             FILE *cmd;
             float br;
-            cmd = popen("xrandr", "--verbose | awk '/Brightness/ { print $2; exit }'");
+            char bz[10], bx[10];
+            cmd = popen("xrandr --verbose | awk '/Brightness/ { print $2; exit }'", "r");
             if (cmd == NULL)
             {
                 puts("Unable to open process");
             }
             while ((br = fgetc(cmd)) != EOF)
-                printf("Brightness: ");
+            {
                 putchar(br);
+                ftoa(br, bz, 2);
+                bx = bx + bz;
+                // printf("%c", br);
+                // float calc = (float)br * 100.0;
+            }
+            puts(bx);
+                // printf("Brightness: %f\n", (float)br * 100.0);
             pclose(cmd);
 
             // double br = system("xrandr --verbose | awk '/Brightness/ { print $2; exit }'");
@@ -74,15 +76,41 @@ void main(int argc, char *argv[])
 
         if (strcmp(argv[1], "--set") == 0)
         {
-            isdigit(argv[2]);
-            printf("--set %s\n", argv[2]);
+            // char input[3] = argv[2];
+            int length, i;
+
+            length = strlen(argv[2]);
+            for (i = 0; i < length; i++)
+            {
+                if (!isdigit(argv[2][i]))
+                {
+                    printf("Error: --set need an number\n");
+                    exit(1);
+                }
+            }
+
+            if (atoi(argv[2]) < 10)
+            {
+                printf("Warning: screen can be blackout!\n");
+                exit(1);
+            }
+            else if (atoi(argv[2]) > 300)
+            {
+                printf("Warning: screen can be overbright!\n");
+                exit(1);
+            }
+            else
+            {
+                float num;
+                num = (float)atoi(argv[2]) / 100.0;
+                char cm[10];
+                ftoa(num, cm, 2);
+                char cc[] = "xrandr --output LVDS-1 --brightness ";
+                strcat(cc, cm);
+                // printf("%s\n", cc);
+                system(cc);
+            }
         }
-
-        // else if (strcmp(argv[1], "--get") == 0)
-        // {
-        //     printf("--get %s\n", argv[2]);
-
-        // }
 
         else
         {
@@ -100,7 +128,7 @@ void main(int argc, char *argv[])
 void help()
 {
     printf("Usage: bright [OPTION]...\n");
-    printf("    --set <persent> - To set brightness level (Ex: 1-100)\n");
+    printf("    --set <persent> - To set brightness level (From 10%% to 300%%)\n");
     printf("    --get - To get brightness level\n");
     printf("    --help - To get help\n");
     printf("    --version - To get version\n");
