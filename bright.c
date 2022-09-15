@@ -53,7 +53,7 @@ void main(int argc, char *argv[])
             {
                 putchar(br);
                 ftoa(br, bz, 2);
-                bx = bx + bz;
+                strcat(bx, bz);
                 // printf("%c", br);
                 // float calc = (float)br * 100.0;
             }
