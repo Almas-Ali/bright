@@ -15,5 +15,5 @@ install:
 
 build:
 	@echo "Building bright..."
-	@gcc bright.c -o bright
+	@gcc bright.c -o bright -lm -lXrandr
 	@echo "bright built successfully"
