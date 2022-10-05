@@ -11,27 +11,46 @@ from os import system as cmd
 import subprocess
 import argparse
 
+
+def set_brightness(persent: int) -> None:
+    SET_BRIGHTNESS = int(persent)/100
+    cmd(f'xrandr --output LVDS-1 --brightness {SET_BRIGHTNESS}')
+
+def get_brightness() -> None:
+    GET_BRIGHTNESS = "xrandr --verbose | awk '/Brightness/ { print $2; exit }'"
+
+    process = subprocess.Popen([GET_BRIGHTNESS], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+
+    CURRENT_BRIGHTNESS = int(float(str(stdout, 'utf-8')) * 100)
+    print(CURRENT_BRIGHTNESS)
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--set', help='Set brightness level (1-100+)', type=int)
 parser.add_argument(
     '--get', help='Get brightness level (1-100+)', action='store_true')
 
-args = parser.parse_args()
+args = parser.parse_args() 
 
 if args.set:
-    bright = int(args.set)/100
-    cmd(f'xrandr --output LVDS-1 --brightness {bright}')
-elif args.get:
-    # br = subprocess.Popen(
-    #     "xrandr", "--verbose | awk '/Brightness/ { print $2; exit }'")
-    # print("brightness: ", br.stdout.read())
+    if args.set > 300:
+        print("Danger: screen can be overbright!")
 
-    process = subprocess.Popen(["xrandr", "--verbose", "|", "awk", "'/Brightness/ { print $2; exit }'"],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    print(stdout)
-    print(stderr)
+    elif args.set < 10:
+        print("Danger: screen can be blackout!")
+
+    elif args.set > 100 or args.set < 30:
+        print("Warning: visibility problem may occurs!")
+        set_brightness(args.set)
+
+    else:
+        set_brightness(args.set)
+
+elif args.get:
+    get_brightness()
+
 else:
     parser.print_help()
 
