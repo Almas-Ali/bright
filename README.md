@@ -1,6 +1,6 @@
 # Bright - A brightness control utility for Linux systems
 
-**version 1.0**
+**version 1.1**
 
 ***Developed by Md. Almas Ali***
 

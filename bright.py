@@ -11,6 +11,11 @@ from os import system as cmd
 import subprocess
 import argparse
 
+def version():
+    print("Version: 1.1")
+
+def author():
+    print("Author: MD. ALMAS ALI")
 
 def set_brightness(persent: int) -> None:
     SET_BRIGHTNESS = int(persent)/100
@@ -28,9 +33,13 @@ def get_brightness() -> None:
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--set', help='Set brightness level (1-100+)', type=int)
+parser.add_argument('--set', help='Set brightness level (1-100+)', type=int, metavar='PERSENT')
 parser.add_argument(
     '--get', help='Get brightness level (1-100+)', action='store_true')
+parser.add_argument(
+    '--version', help='Get version information', action='store_true')
+parser.add_argument(
+    '--author', help='Get author information', action='store_true')
 
 args = parser.parse_args() 
 
@@ -50,6 +59,12 @@ if args.set:
 
 elif args.get:
     get_brightness()
+
+elif args.version:
+    version()
+
+elif args.author:
+    author()
 
 else:
     parser.print_help()
